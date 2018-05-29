@@ -1,8 +1,9 @@
 const binance           = require('node-binance-api');
 const helperCalcuator   = require('./helperCalcuator');
-
+const _ = require('lodash');
 
 var tradesRes;
+var balances;
 
 module.exports = {
   init: function () { // function (apikey,apisecret)
@@ -22,13 +23,14 @@ module.exports = {
 			});
 	    });
 	});
-  }, // balance // 
-  getBalanceAccount: function (pair) {
+  }, // Only balance Avaliable // 
+  getBalanceAccount: function () {
   	return new Promise((resolve, reject) => {
 	    binance.useServerTime(function() {
-	    	binance.balance(pair, (error, balance) => {
+	    	binance.balance((error, balance) => {
 			  	if ( error ) return reject(err);
-			   	return resolve(balance)
+			  	balances = _.mapValues(balance, function(o) { if(o.available>0) return o; });
+			   	return resolve(balances);
 			});
 	    });
 	});
@@ -40,4 +42,6 @@ module.exports = {
   ICO: { available: '0.00000000', onOrder: '0.00000000' },
   NEO: { available: '0.00000000', onOrder: '0.00000000' },
   BNB: { available: '41.33761879', onOrder: '0.00000000' }*/
+
+
 };

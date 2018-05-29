@@ -2,7 +2,7 @@
 const express    = require('express');        // call express
 const app        = express();                 // define our app using express
 const bodyParser = require('body-parser');
-const binance      = require('./binanceMain');
+const binance    = require('./binanceMain');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -30,7 +30,13 @@ router.get('/getTradesByPair', function(req, res) {
 });
 
 router.get('/balance', function(req, res) {
-	
+	binance.init();
+	binance.getBalanceAccount().then(balance => {
+    	res.json(balance); 
+	})
+	.catch(err => {
+		res.json(err); 
+	}); 
 });
 
 // more routes for our API will happen here
